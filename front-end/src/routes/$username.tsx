@@ -1,4 +1,5 @@
 import {createFileRoute} from "@tanstack/react-router"
+import {UserHeader} from "../components/user-header.tsx";
 
 
 
@@ -7,10 +8,10 @@ export const Route = createFileRoute("/$username")({
 });
 
 function $username() {
-    const {username} = Route.useParams();
+    // const {username} = Route.useParams();
     return (
-        <div>
-            <h1>username: {username}</h1>
-        </div>
+        <>
+            <UserHeader />
+        </>
     )
 }
