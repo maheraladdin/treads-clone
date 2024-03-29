@@ -8,30 +8,16 @@ import {
     MenuItem,
     MenuList,
     Portal,
-    Text, useToast,
+    Text,
     VStack
 } from "@chakra-ui/react";
 import ZuckerbergAvatar from "../assets/zuck-avatar.png";
 import {BsInstagram} from "react-icons/bs";
 import {CgMoreO} from "react-icons/cg";
-import {useCopyToClipboard} from "usehooks-ts";
+import {useCopy} from "../hooks/useCopy.ts";
 
 export function UserHeader() {
-    const toast = useToast();
-    const [_, copy] = useCopyToClipboard();
-    const copyLink = async () => {
-        toast.promise(copy(window.location.href), {
-            loading: {
-                title: "Copying link...",
-            },
-            success: {
-                title: "Link copied!",
-            },
-            error: {
-                title: "Failed to copy link",
-            },
-        });
-    }
+    const {copyLink} = useCopy(window.location.href);
 
     return (
         <VStack gap={4} alignItems={"start"} >
@@ -59,7 +45,10 @@ export function UserHeader() {
                 </Box>
                 <Box>
                     <Avatar
-                        size={"xl"}
+                        size={{
+                            base: "md",
+                            md: "xl"
+                        }}
                         name={"Mark Zuckerberg"}
                         src={ZuckerbergAvatar}
                     />

@@ -13,12 +13,15 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "@react-buddy/ide-toolbox": "^2.4.0",
+    "@react-buddy/palette-chakra-ui": "^2.3.1",
     "@tanstack/react-router": "^1.22.9",
     "framer-motion": "^11.0.23",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",
-    "usehooks-ts": "^3.0.2"
+    "usehooks-ts": "^3.0.2",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@tanstack/router-devtools": "^1.22.9",
