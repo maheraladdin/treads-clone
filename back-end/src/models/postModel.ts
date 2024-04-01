@@ -14,7 +14,6 @@ const postSchema = new mongoose.Schema({
     },
     img: {
         type: String,
-        required: [true, "Please provide an image"],
     },
     likes: {
         type: [mongoose.Schema.Types.ObjectId],

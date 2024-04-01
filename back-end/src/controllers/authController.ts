@@ -2,33 +2,29 @@ import {Request, Response, NextFunction} from "express";
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel";
 import bcrypt from "bcryptjs"
-import generateTokenAndSetCookies from "../utils/generateTokenAndSetCookies";
+import {generateTokenAndSetCookies} from "../utils";
 
 /**
  * @description Signup a user
- * @param req
- * @param res
- * @param next
+ * @param req {Request} - Request object
+ * @param res {Response} - Response object
+ * @param _ {NextFunction} - Next function
  */
-const signupHandler = async (req: Request, res: Response, next: NextFunction) => {
+const signupHandler = async (req: Request, res: Response, _: NextFunction) => {
     const {name, email, password, username} = req.body;
     // get rememberMe from the request header
     const rememberMe = req.header("rememberMe") === "true";
 
     if(!name || !email || !password || !username) {
         res.status(400);
-        res.json({
-            message: "Invalid user data",
-        });
+        throw new Error("Invalid user data");
     }
 
     const user = await User.exists({$or: [{email}, {username}]});
 
     if (user) {
         res.status(400);
-        res.json({
-            message: "User already exists",
-        });
+        throw new Error("User already exists");
     }
 
     const salt = bcrypt.genSaltSync(10);
@@ -55,24 +51,28 @@ const signupHandler = async (req: Request, res: Response, next: NextFunction) =>
             },
         });
     }
-    else
-        res.status(400).json({
-            message: "Invalid user data",
-        });
+    else {
+        res.status(400);
+        throw new Error("Invalid user data");
+    }
 }
 
 export const signUp = asyncHandler(signupHandler);
 
-const loginHandler = async (req: Request, res: Response, next: NextFunction) => {
+/**
+ * @description Login a user
+ * @param req {Request} - Request object
+ * @param res {Response} - Response object
+ * @param _ {NextFunction} - Next function
+ */
+const loginHandler = async (req: Request, res: Response, _: NextFunction) => {
     const {password, username} = req.body;
     // get rememberMe from the request header
     const rememberMe = req.header("rememberMe") === "true";
 
     if(!password || !username) {
         res.status(400);
-        res.json({
-            message: "Invalid user data",
-        });
+        throw new Error("Invalid credentials");
     }
 
     const user = await User.findOne({username});
@@ -87,9 +87,7 @@ const loginHandler = async (req: Request, res: Response, next: NextFunction) => 
 
         if (!isMatch) {
             res.status(400);
-            res.json({
-                message: "Invalid credentials",
-            });
+            throw new Error("Invalid credentials");
         }
 
         generateTokenAndSetCookies(user?._id, res, rememberMe);
@@ -106,3 +104,19 @@ const loginHandler = async (req: Request, res: Response, next: NextFunction) => 
 }
 
 export const login = asyncHandler(loginHandler);
+
+/**
+ * @description Logout a user
+ * @param req
+ * @param res
+ * @param _
+ */
+const logoutHandler = async (req: Request, res: Response, _: NextFunction) => {
+    res.clearCookie("token");
+    res.clearCookie("refreshToken");
+    res.status(200).json({
+        message: "Logged out successfully",
+    });
+}
+
+export const logout = asyncHandler(logoutHandler);

@@ -1,4 +1,4 @@
-import express, {Request} from "express";
+import express, {NextFunction, Request, Response} from "express";
 import {connectDB} from "./db/connectDB";
 import cookieParser from "cookie-parser";
 import {authRouter, userRouter, postRouter} from "./routes";
@@ -39,15 +39,26 @@ if (process.env.NODE_ENV === 'development') {
   app.use(errorhandler({
     log: errorNotification,
   }))
+} else {
+    app.use(errorHandler)
 }
 
 function errorNotification (err: Error, str: string, req: Request) {
-  var title = 'Error in ' + req.method + ' ' + req.url;
+  const title = 'Error in ' + req.method + ' ' + req.url;
 
   notifier.notify({
-    title: title,
+    title,
     message: str
   })
+}
+
+function errorHandler(err: Error, req: Request, res: Response, _: NextFunction) {
+  const title = 'Error in ' + req.method + ' ' + req.url;
+  res.json({
+    error: title,
+    stack: err.stack,
+    message: err.message
+  });
 }
 
 app.listen(PORT, () => {

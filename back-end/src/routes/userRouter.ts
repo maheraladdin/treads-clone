@@ -1,8 +1,14 @@
 import express from "express";
-import {getUser} from "../controllers/userController";
+import {follow, getUserProfile, updatePassword, updateProfile} from "../controllers/userController";
+import protectRoute from "../middlewares/protectRoute";
 
 const userRouter = express.Router();
 
-userRouter.get("/", getUser);
+userRouter.get("/profile/:username", getUserProfile);
+
+userRouter.use(protectRoute);
+userRouter.post("/follow/:id", follow);
+userRouter.put("/update-profile", updateProfile);
+userRouter.patch("/update-password", updatePassword);
 
 export default userRouter;
