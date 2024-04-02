@@ -7,7 +7,7 @@ const userRouter = express.Router();
 userRouter.get("/profile/:username", getUserProfile);
 
 userRouter.use(protectRoute);
-userRouter.post("/follow/:id", follow);
+userRouter.patch("/follow/:id", follow);
 userRouter.put("/update-profile", updateProfile);
 userRouter.patch("/update-password", updatePassword);
 

@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import {authRouter, userRouter, postRouter} from "./routes";
 import errorhandler from "errorhandler";
 import notifier from "node-notifier";
+import morgan from "morgan";
+
 
 // connect to the database
 (async () => await connectDB())();
@@ -14,6 +16,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // middlewares
+
+// use morgan for logging
+if(process.env.NODE_ENV === 'development')
+  app.use(morgan('dev'));
 
 // allow express to parse json
 app.use(express.json());
@@ -30,7 +36,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/posts", postRouter);
 
 app.all('*', (req, res, next) => {
-    next("Route not found");
+    res.status(404);
+    throw new Error(`Cannot find ${req.method} ${req.originalUrl} on this server!`);
 })
 
 // error handling

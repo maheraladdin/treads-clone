@@ -4,6 +4,7 @@ import {NextFunction, Response, Request} from "express";
 import User from "../models/userModel";
 import { Document } from 'mongoose';
 import jwt from "jsonwebtoken";
+import asyncHandler from "express-async-handler";
 
 type jwtProps = {
     userId: string;
@@ -26,32 +27,28 @@ export type ProtectedRequest = Request & {
   user: UserDocument;
 }
 
-const protectRoute = async (req: Request, res: Response, next: NextFunction) => {
+const protectRouteHandler = async (req: Request, res: Response, next: NextFunction) => {
     const protectedRequest = req as ProtectedRequest;
-    try {
-        const {token} = req.cookies;
+    const {token} = req.cookies;
 
-        if(!token) {
-            res.status(401);
-            res.json({message: "Not authorized, no token"});
-        }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as jwtProps;
-
-        const user = await User.findById(decoded.userId).select("-password");
-
-        if(!user) {
-            res.status(404);
-            res.json({message: "User not found"});
-        } else {
-            protectedRequest.user = user;
-        }
-        next();
-
-    } catch (error) {
+    if(!token) {
         res.status(401);
-        res.json({message: "Not authorized, token failed"});
+        throw new Error("Not authorized, no token");
     }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as jwtProps;
+
+    const user = await User.findById(decoded.userId).select("-password");
+
+    if(!user) {
+        res.status(404);
+        throw new Error("User not found");
+    } else {
+        protectedRequest.user = user;
+    }
+    next();
 }
+
+const protectRoute = asyncHandler(protectRouteHandler);
 
 export default protectRoute;

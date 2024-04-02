@@ -92,7 +92,7 @@ const loginHandler = async (req: Request, res: Response, _: NextFunction) => {
 
         generateTokenAndSetCookies(user?._id, res, rememberMe);
         res.status(201).json({
-            message: "User created successfully",
+            message: "User logged in successfully",
             data: {
                 _id: user._id,
                 name: user.name,
