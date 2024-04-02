@@ -6,6 +6,7 @@ import {ChakraProvider, extendTheme} from '@chakra-ui/react';
 import {mode} from "@chakra-ui/theme-tools"
 import {DevSupport} from "@react-buddy/ide-toolbox";
 import {ComponentPreviews, useInitial} from "./dev";
+import {RecoilRoot} from "recoil";
 
 const styles = {
     global: (props: any) => ({
@@ -32,12 +33,14 @@ const theme = extendTheme({config, styles, colors});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <ChakraProvider theme={theme}>
-            <DevSupport ComponentPreviews={ComponentPreviews}
-                        useInitialHook={useInitial}
-            >
-                <App/>
-            </DevSupport>
-        </ChakraProvider>
+        <RecoilRoot>
+            <ChakraProvider theme={theme}>
+                <DevSupport ComponentPreviews={ComponentPreviews}
+                            useInitialHook={useInitial}
+                >
+                    <App/>
+                </DevSupport>
+            </ChakraProvider>
+        </RecoilRoot>
     </React.StrictMode>,
 )
