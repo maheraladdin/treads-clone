@@ -147,14 +147,14 @@ const replyPostHandler = async (req: Request, res: Response, _: NextFunction) =>
         throw new Error("Please provide text");
     }
 
-    const post = await Post.findById(id);
+    const isPostExist = await Post.exists({_id: id});
 
-    if (!post) {
+    if (!isPostExist) {
         res.status(404);
         throw new Error("Post not found");
     }
 
-    const newPost = await Post.findByIdAndUpdate(id, {
+    const post = await Post.findByIdAndUpdate(id, {
         $push: {
             replies: {
                 text,
@@ -165,7 +165,7 @@ const replyPostHandler = async (req: Request, res: Response, _: NextFunction) =>
 
     res.status(201).json({
         message: "Reply added successfully",
-        data: newPost
+        data: post
     });
 }
 
