@@ -11,7 +11,7 @@ export default function Protected({children}: {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!user?.username) {
+        if (!user?.username && window.location.pathname !== "/") {
             navigate({
                 to: "/"
             }).then(() => {

@@ -66,11 +66,11 @@ export default function LoginCard({setLogin}: LoginCardProps) {
         }).then((res) => {
             toast.success(res.data.message);
             setUserAtom(res.data.data);
-            navigate({ to: '/$username', params: { username: res.data.data.username } })
+            navigate({ to: '/$username', params: { username: res.data.data.username } });
+            reset();
         }).catch((error) => {
             toast.error(error.response.data.error.message);
         });
-        reset();
     }
 
     return (

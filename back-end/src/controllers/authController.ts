@@ -79,9 +79,7 @@ const loginHandler = async (req: Request, res: Response, _: NextFunction) => {
 
     if (!user) {
         res.status(400);
-        res.json({
-            message: "User does not exist",
-        });
+        throw new Error("Invalid credentials");
     } else {
         const isMatch = bcrypt.compareSync(password, user.password);
 
