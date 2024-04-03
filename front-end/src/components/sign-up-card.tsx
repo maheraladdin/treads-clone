@@ -13,7 +13,6 @@ import {
     Text,
     useColorModeValue,
     Link,
-    FormErrorMessage
 } from '@chakra-ui/react'
 import {useState} from 'react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
@@ -21,20 +20,25 @@ import {useForm} from "react-hook-form";
 import {ErrorMessage} from "@hookform/error-message";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
+import {userAtom} from "../atoms/userAtom.ts";
+import {useSetRecoilState} from "recoil";
+import {useNavigate} from "@tanstack/react-router";
+import axios from "axios";
 
 type SignupCardProps = {
     setLogin: (value: boolean) => void
 }
 
 type FormData = {
-    fullName: string;
+    name: string;
     username: string;
     email: string;
     password: string;
 };
 
 const formSchema = z.object({
-    fullName: z.string().min(0, {message: "Full Name is required"}),
+    name: z.string().min(0, {message: "Full Name is required"}),
     username: z.string().min(0, {message: "Username is required"}),
     email: z.string().email({message: "Invalid email"}),
     password: z.string().min(8, {message: "Password must be at least 8 characters"}),
@@ -42,14 +46,36 @@ const formSchema = z.object({
 
 export default function SignupCard({setLogin}: SignupCardProps) {
     const [showPassword, setShowPassword] = useState(false)
+    const setUserAtom = useSetRecoilState(userAtom);
+    const navigate = useNavigate({ from: '/' })
 
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-        resolver: zodResolver(formSchema)
+
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            name: "",
+            username: "",
+            email: "",
+            password: ""
+        },
+        mode: "onBlur"
     });
 
-    const onSubmit = (formData: z.infer<typeof formSchema>) => {
-        const { fullName, username, email, password } = formData;
-        console.log({ fullName, username, email, password });
+    const onSubmit = async (formData: z.infer<typeof formSchema>) => {
+        const { name, username, email, password } = formData;
+        await axios.post("/api/auth/signup", {
+            name,
+            username,
+            email,
+            password
+        }).then((res) => {
+            toast.success(res.data.message);
+            setUserAtom(res.data.data);
+            navigate({ to: '/$username', params: { username: res.data.data.username } });
+            reset();
+        }).catch((error) => {
+            toast.error(error.response.data.error.message);
+        });
     }
 
     return (
@@ -72,32 +98,32 @@ export default function SignupCard({setLogin}: SignupCardProps) {
                         <Stack spacing={4}>
                             <HStack>
                                 <Box>
-                                    <FormControl id="fullName" isRequired>
+                                    <FormControl id="fullName">
                                         <FormLabel>Full Name</FormLabel>
-                                        <Input type="text" {...register("fullName")} />
-                                        <ErrorMessage name={"fullName"} errors={errors} render={({ message }) => (
-                                            <FormErrorMessage>{message}</FormErrorMessage>
+                                        <Input type="text" {...register("name")} />
+                                        <ErrorMessage name={"name"} errors={errors} render={({ message }) => (
+                                            <Box color={"red.500"} fontSize={"sm"}>{message}</Box>
                                         )} />
                                     </FormControl>
                                 </Box>
                                 <Box>
-                                    <FormControl id="username" isRequired>
+                                    <FormControl id="username">
                                         <FormLabel>Username</FormLabel>
                                         <Input type="text" {...register("username")} />
                                         <ErrorMessage name={"username"} errors={errors} render={({ message }) => (
-                                            <FormErrorMessage>{message}</FormErrorMessage>
+                                            <Box color={"red.500"} fontSize={"sm"}>{message}</Box>
                                         )} />
                                     </FormControl>
                                 </Box>
                             </HStack>
-                            <FormControl id="email" isRequired>
+                            <FormControl id="email">
                                 <FormLabel>Email address</FormLabel>
                                 <Input type="email" {...register("email")} />
                                 <ErrorMessage name={"email"} errors={errors} render={({ message }) => (
-                                    <FormErrorMessage>{message}</FormErrorMessage>
+                                    <Box color={"red.500"} fontSize={"sm"}>{message}</Box>
                                 )} />
                             </FormControl>
-                            <FormControl id="password" isRequired>
+                            <FormControl id="password">
                                 <FormLabel>Password</FormLabel>
                                 <InputGroup>
                                     <Input type={showPassword ? 'text' : 'password'} {...register("password")} />
@@ -110,7 +136,7 @@ export default function SignupCard({setLogin}: SignupCardProps) {
                                     </InputRightElement>
                                 </InputGroup>
                                 <ErrorMessage name={"password"} errors={errors} render={({ message }) => (
-                                    <FormErrorMessage>{message}</FormErrorMessage>
+                                    <Box color={"red.500"} fontSize={"sm"}>{message}</Box>
                                 )} />
                             </FormControl>
                             <Stack spacing={10} pt={2}>

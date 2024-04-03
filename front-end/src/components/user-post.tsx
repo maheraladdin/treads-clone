@@ -97,8 +97,10 @@ export function UserPost({
                         </Menu>
                     </Flex>
                 </Flex>
-                {/* @ts-ignore */}
-                <Link to={"/markzuckerberg/post/123"}>
+                <Link
+                    to={"/$user/post/$postId"}
+                    params={{user: "markzuckerberg", postId: "123"}}
+                >
                     <Flex gap={2} flexDirection={"column"}>
                         <Text fontSize={"sm"}>{postTitle}</Text>
                         { postImage ?

@@ -5,6 +5,7 @@ import {authRouter, userRouter, postRouter} from "./routes";
 import errorhandler from "errorhandler";
 import notifier from "node-notifier";
 import morgan from "morgan";
+import cors from 'cors';
 
 
 // connect to the database
@@ -16,6 +17,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // middlewares
+
+app.use(cors({
+  origin: '*', // Allow all origins
+  credentials: true, // Allow credentials (cookies, authorization headers, TLS client certificates)
+}));
 
 // use morgan for logging
 if(process.env.NODE_ENV === 'development')

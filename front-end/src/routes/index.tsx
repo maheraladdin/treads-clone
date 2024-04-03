@@ -1,7 +1,9 @@
-import {createFileRoute} from "@tanstack/react-router";
+import {createFileRoute, Navigate} from "@tanstack/react-router";
 import SignupCard from "../components/sign-up-card.tsx";
 import {useState} from "react";
 import LoginCard from "../components/login-card.tsx";
+import {useRecoilValue} from "recoil";
+import {userAtom} from "../atoms/userAtom.ts";
 
 
 export const Route = createFileRoute("/")({
@@ -10,7 +12,8 @@ export const Route = createFileRoute("/")({
 
 function Index() {
     const [login, setLogin] = useState<boolean>(false);
+    const user = useRecoilValue(userAtom);
     return (
-        login ? <LoginCard setLogin={setLogin} /> : <SignupCard setLogin={setLogin} />
+        user?.username ? <Navigate to={"/$username"} params={{username: user.username}} />  : (login ? <LoginCard setLogin={setLogin} /> : <SignupCard setLogin={setLogin} />)
     )
 }

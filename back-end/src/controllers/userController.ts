@@ -159,3 +159,21 @@ const getUserProfileHandler = async (req: Request, res: Response, _: NextFunctio
 }
 
 export const getUserProfile = asyncHandler(getUserProfileHandler);
+
+const getLoggedUserHandler = async (req: Request, res: Response, _: NextFunction) => {
+    const protectedRequest = req as ProtectedRequest;
+
+    const user = await User.findById(protectedRequest.user._id).select("-password").select("-updatedAt");
+    if(!user) {
+        res.status(404);
+        throw new Error("User not found");
+    }
+
+    res.status(200);
+    res.json({
+        message: "User profile fetched successfully",
+        data: user
+    });
+}
+
+export const getLoggedUser = asyncHandler(getLoggedUserHandler);
