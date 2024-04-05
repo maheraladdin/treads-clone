@@ -4,6 +4,8 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModel";
 import {ProtectedRequest} from "../middlewares/protectRoute";
 import bcrypt from "bcryptjs";
+import sharp from 'sharp';
+import {Buffer} from 'buffer';
 
 /**
  * @description Follow or unfollow a user
@@ -72,8 +74,28 @@ const updateProfileHandler = async (req: Request, res: Response, _: NextFunction
         if (name) user.name = name;
         if (email) user.email = email;
         if (username) user.username = username;
-        if (profilePic) user.profilePic = profilePic;
         if (bio) user.bio = bio;
+
+        if (profilePic) {
+            // Remove 'data:image/jpeg;base64,' from the start of the string
+            const base64Data = profilePic.replace(/^data:image\/\w+;base64,/, '');
+            const buffer = Buffer.from(base64Data, 'base64');
+
+            try {
+                // Use sharp to compress and convert the image
+                const compressedImageBuffer = await sharp(buffer)
+                    .resize(500) // Resize the image to a width of 500 pixels. You can adjust this value as needed.
+                    .webp({ quality: 80 }) // Convert the image to webp format with a quality of 80. You can adjust this value as needed.
+                    .toBuffer();
+
+                // Convert the compressed image back to base64 format
+                user.profilePic = `data:image/webp;base64,${compressedImageBuffer.toString('base64')}`;
+            } catch (error) {
+                // Handle the error
+                res.status(500);
+                throw new Error('Error compressing image');
+            }
+        }
 
         const updatedUser = await user.save();
 
