@@ -48,10 +48,11 @@ const signupHandler = async (req: Request, res: Response, _: NextFunction) => {
                 name: newUser.name,
                 email: newUser.email,
                 username: newUser.username,
+                bio: newUser.bio,
+                profilePic: newUser.profilePic,
             },
         });
-    }
-    else {
+    } else {
         res.status(400);
         throw new Error("Invalid user data");
     }
@@ -80,7 +81,7 @@ const loginHandler = async (req: Request, res: Response, _: NextFunction) => {
     if (!user) {
         res.status(400);
         throw new Error("Invalid credentials");
-    } else {
+    } else if(user) {
         const isMatch = bcrypt.compareSync(password, user.password);
 
         if (!isMatch) {
@@ -96,6 +97,8 @@ const loginHandler = async (req: Request, res: Response, _: NextFunction) => {
                 name: user.name,
                 email: user.email,
                 username: user.username,
+                bio: user.bio,
+                profilePic: user.profilePic,
             },
         });
     }

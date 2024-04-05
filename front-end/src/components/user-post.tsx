@@ -5,7 +5,7 @@ import VerifiedIcon from "../assets/verified.png"
 import {useId, useState} from "react";
 import {BsThreeDots} from "react-icons/bs";
 import Actions from "./actions.tsx";
-import {useCopy} from "../hooks/useCopy.ts";
+import {useCopy} from "../hooks/use-copy.ts";
 
 const Avatars = [
     {

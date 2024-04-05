@@ -28,7 +28,7 @@ if(process.env.NODE_ENV === 'development')
   app.use(morgan('dev'));
 
 // allow express to parse json
-app.use(express.json());
+app.use(express.json({limit: '2mb'}));
 
 // allow express to parse urlencoded data
 app.use(express.urlencoded({ extended: true }));

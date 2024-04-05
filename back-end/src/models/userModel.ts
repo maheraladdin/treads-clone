@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
     },
     profilePic: {
         type: String,
-        default: "",
+        default: "https://bit.ly/sage-adebayo",
     },
     followers: {
         type: [String],
