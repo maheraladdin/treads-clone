@@ -1,4 +1,4 @@
-import {useNavigate} from "@tanstack/react-router";
+import {useNavigate, useRouterState} from "@tanstack/react-router";
 import {useRecoilState} from "recoil";
 import {userAtom} from "../atoms/userAtom.ts";
 import React, {useLayoutEffect} from "react";
@@ -10,14 +10,18 @@ import axios from "axios";
 export default function Protected({children}: {
     children: React.ReactNode
 }) {
-    const navigate = useNavigate();
+    const location = useRouterState({
+        select: (state) => state.location,
+    });
+    const navigate = useNavigate({
+        from: location.pathname,
+    });
     const [isPublicPath] = usePublicPaths();
     const [user, setUserAtom] = useRecoilState(userAtom);
 
     useLayoutEffect(() => {
         if(user?.username) return;
         axios.get("/api/users/get-logged-user").then(async (res) => {
-            console.log(res.data.message);
             setUserAtom(res.data.data);
             if(window.location.pathname === "/") {
                 await navigate({

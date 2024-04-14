@@ -71,12 +71,12 @@ const updateProfileHandler = async (req: Request, res: Response, _: NextFunction
         throw new Error("User not found");
     } else {
 
-        if (name) user.name = name;
-        if (email) user.email = email;
-        if (username) user.username = username;
-        if (bio) user.bio = bio;
+        if (name && name !== user.name) user.name = name;
+        if (email && email !== user.email) user.email = email;
+        if (username && username !== user.username) user.username = username;
+        if (bio && bio !== user.bio) user.bio = bio;
 
-        if (profilePic) {
+        if (profilePic && profilePic !== user.profilePic) {
             // Remove 'data:image/jpeg;base64,' from the start of the string
             const base64Data = profilePic.replace(/^data:image\/\w+;base64,/, '');
             const buffer = Buffer.from(base64Data, 'base64');

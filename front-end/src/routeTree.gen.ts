@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as UsernameImport } from './routes/$username'
 import { Route as IndexImport } from './routes/index'
+import { Route as ProfileUpdatePasswordImport } from './routes/profile.updatePassword'
 import { Route as ProfileUpdateImport } from './routes/profile.update'
 import { Route as UserPostPostIdImport } from './routes/$user.post.$postId'
 
@@ -25,6 +26,11 @@ const UsernameRoute = UsernameImport.update({
 
 const IndexRoute = IndexImport.update({
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProfileUpdatePasswordRoute = ProfileUpdatePasswordImport.update({
+  path: '/profile/updatePassword',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -54,6 +60,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileUpdateImport
       parentRoute: typeof rootRoute
     }
+    '/profile/updatePassword': {
+      preLoaderRoute: typeof ProfileUpdatePasswordImport
+      parentRoute: typeof rootRoute
+    }
     '/$user/post/$postId': {
       preLoaderRoute: typeof UserPostPostIdImport
       parentRoute: typeof rootRoute
@@ -67,6 +77,7 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   UsernameRoute,
   ProfileUpdateRoute,
+  ProfileUpdatePasswordRoute,
   UserPostPostIdRoute,
 ])
 

@@ -19,7 +19,9 @@ import {useRecoilValue} from "recoil";
 import {userAtom} from "../atoms/userAtom.ts";
 
 export function UserHeader() {
-    const navigate = useNavigate();
+    const navigate = useNavigate({
+        from: "/$username",
+    });
     const {copyLink} = useCopy(window.location.href);
     const user = useRecoilValue(userAtom);
 
@@ -88,6 +90,11 @@ export function UserHeader() {
                                     to: "/profile/update"
                                 })}>
                                     Edit Profile
+                                </MenuItem>
+                                <MenuItem bg={"gray.dark"} onClick={() => navigate({
+                                    to: "/profile/updatePassword"
+                                })}>
+                                    Edit Password
                                 </MenuItem>
                             </MenuList>
                         </Portal>

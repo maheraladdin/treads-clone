@@ -1,5 +1,3 @@
-'use client'
-
 import {
     Button,
     Flex,
@@ -21,20 +19,24 @@ import {ElementRef, useEffect, useRef} from "react";
 import toast from "react-hot-toast";
 import {ErrorMessage} from "@hookform/error-message";
 import {usePreviewImage} from "../hooks/use-preview-image.ts";
+import {useNavigate} from "@tanstack/react-router";
 
 const formSchema = z.object({
-    userName: z.string().min(0, {message: 'Username must be at least 0 characters long.'}),
+    username: z.string().min(0, {message: 'Username must be at least 0 characters long.'}),
     name: z.string().min(0, {message: 'Name must be at least 0 characters long.'}),
     email: z.string().email({message: 'Invalid email address.'}),
     bio: z.optional(z.string()),
 })
 
 export default function UserProfileEdit() {
+    const navigate = useNavigate({
+        from: "/profile/update",
+    })
     const [user, setUser] = useRecoilState(userAtom);
     const imgRef = useRef<ElementRef<"input">>(null);
     const {register, handleSubmit, reset, formState: {errors}} = useForm({
         defaultValues: {
-            userName: "",
+            username: "",
             name: "",
             email: "",
             bio: "",
@@ -45,10 +47,10 @@ export default function UserProfileEdit() {
     const {handleImageChange, previewImage} = usePreviewImage(user?.profilePic);
 
     const onSubmit = async (formData: z.infer<typeof formSchema>) => {
-        const {userName, name, email, bio} = formData;
+        const {username, name, email, bio} = formData;
 
         if(
-            userName === user?.username &&
+            username === user?.username &&
             name === user?.name &&
             email === user?.email &&
             bio === user?.bio &&
@@ -58,7 +60,7 @@ export default function UserProfileEdit() {
         }
 
         await axios.put('/api/users/update-profile', {
-            userName,
+            username,
             name,
             email,
             bio,
@@ -73,7 +75,7 @@ export default function UserProfileEdit() {
 
     useEffect(() => {
         reset({
-            userName: user?.username,
+            username: user?.username,
             name: user?.name,
             email: user?.email,
             bio: user?.bio,
@@ -124,12 +126,12 @@ export default function UserProfileEdit() {
                     <FormControl isRequired>
                         <FormLabel>User name</FormLabel>
                         <Input
-                            {...register('userName')}
+                            {...register('username')}
                             placeholder="johndoe"
                             _placeholder={{color: 'gray.500'}}
                             type="text"
                         />
-                        <ErrorMessage name={"userName"} errors={errors} render={({ message }) => (
+                        <ErrorMessage name={"username"} errors={errors} render={({ message }) => (
                             <Box color={"red.500"} fontSize={"sm"}>{message}</Box>
                         )} />
                     </FormControl>
@@ -163,7 +165,14 @@ export default function UserProfileEdit() {
                             w="full"
                             _hover={{
                                 bg: 'red.500',
-                            }}>
+                            }}
+                            onClick={() => navigate({
+                                to: "/$username",
+                                params: {
+                                    username: user?.username as string,
+                                }
+                            })}
+                        >
                             Cancel
                         </Button>
                         <Button
