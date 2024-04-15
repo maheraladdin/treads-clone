@@ -80,7 +80,7 @@ export default function UserProfileEdit() {
             email: user?.email,
             bio: user?.bio,
         })
-    }, [user]);
+    }, [user, reset]);
 
     return (
     <form onSubmit={handleSubmit(onSubmit)}>

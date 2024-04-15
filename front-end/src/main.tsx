@@ -2,14 +2,14 @@ import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
-import {ChakraProvider, extendTheme} from '@chakra-ui/react';
+import {ChakraProvider, ColorMode, extendTheme} from '@chakra-ui/react';
 import {mode} from "@chakra-ui/theme-tools"
 import {DevSupport} from "@react-buddy/ide-toolbox";
 import {ComponentPreviews, useInitial} from "./dev";
 import {RecoilRoot} from "recoil";
 
 const styles = {
-    global: (props: any) => ({
+    global: (props: { colorMode: ColorMode }) => ({
         body: {
             color: mode("gray.800", "whiteAlpha.900")(props),
             bg: mode("gray.100", "#101010")(props),

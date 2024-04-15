@@ -40,7 +40,7 @@ export default function Protected({children}: {
                 toast.error("You must be logged in to view this page.");
             });
         });
-    }, [user?.username, window.location.pathname]);
+    }, [user?.username, isPublicPath, navigate, setUserAtom]);
 
     return children;
 }

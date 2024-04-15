@@ -14,7 +14,7 @@ import {atom} from "recoil";
  * @param {Date} updatedAt - Date user was last updated
  */
 
-type User = {
+export type User = {
     name: string;
     username: string;
     email: string;

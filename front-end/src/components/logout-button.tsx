@@ -7,7 +7,6 @@ import {useNavigate} from "@tanstack/react-router";
 import {FiLogOut} from "react-icons/fi";
 
 export const LogoutButton = () => {
-
     const [user, setUserAtom] = useRecoilState(userAtom);
     const navigate = useNavigate();
 
@@ -26,11 +25,9 @@ export const LogoutButton = () => {
         });
     }
 
-  return (
-      user?.username ?
-    <Button position={"fixed"} top={"30px"} right={"30px"} size={"md"} onClick={logout}>
-        <FiLogOut size={20} />
-    </Button>
-          : null
-  );
+  return (user?.username ? (
+        <Button position={"fixed"} top={"30px"} right={"30px"} size={"md"} onClick={logout}>
+            <FiLogOut size={20} />
+        </Button>
+    ) : null);
 };

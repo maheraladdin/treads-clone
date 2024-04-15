@@ -3,7 +3,7 @@ import {useCopyToClipboard} from "usehooks-ts";
 
 export const useCopy = (herf: string) => {
     const toast = useToast();
-    const [_, copy] = useCopyToClipboard();
+    const [, copy] = useCopyToClipboard();
     const copyLink = async () => {
         toast.promise(copy(herf), {
             loading: {
